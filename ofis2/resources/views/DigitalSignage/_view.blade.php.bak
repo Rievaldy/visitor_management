@@ -1,0 +1,343 @@
+@extends('signage')
+
+@section('head')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="refresh" content="60">
+    <link href="{{ asset('vendor/webcodecamjs/css/style.css')}}" rel="stylesheet">
+@endsection
+
+@section('content')
+    @if ( $bg[0]->img != null )
+        <div class="container-fluid" style="background: url({{ $bg[0]->img }}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;">
+    @else
+        <div class="container-fluid" style="background: url({{ asset('img/bg-ds.jpeg')}}) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;">
+    @endif
+        <div class="row">
+            <input type="hidden" name="is_ds_mirror" value="{{ $rooms->is_ds_mirror}}">
+            {{-- <div class="col-8 p-30" style="background: rgba(148, 202, 193, .85); height: 100vh"> --}}
+            <div class="col-8 p-30" style="background: rgba(0, 0, 0, .45); height: 100vh">
+                <div class="mb-4">
+                    <img src="{{ asset('img/logo.png') }}" alt="" style="width: 30%">
+                </div>
+                <div class="mb-4 pt-30">
+                    <p class="font-size-80">
+                        {{ $rooms->name}}
+                    </p>
+                    <input type="hidden" id="room_id" name="room_id" value="{{$rooms->id}}">
+                </div>
+                @if ( $activeBooks != null)
+                    <div class="mb-4 pt-4">
+                        <p class="font-size-20 mt-4">{{ $activeBooks[0]->pic_name }} has claimed this room</p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="font-size-18 mt-4">Meeting Title</p>
+                        <p class="font-size-30">"{{ $activeBooks[0]->desc }}"</p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="font-size-30 font-weight-400">Expires in {{ date('H:i', strtotime($activeBooks[0]->h_end)) }}</p>
+                    </div>
+                @else
+                    <div class="pt-4">
+                        <p class="font-size-24 mt-4">There is no meeting at this time.</p>
+                    </div>
+                @endif
+                <div class="position-absolute" style="bottom: 34px">
+                    {{-- <a href="javascript:void(0);" onclick="activeCamera()" data-toggle="modal" data-target="#exampleModalCenter" class="text-white font-size-20" style="border: 1px solid #fff; border-radius: 50px; padding: 8px 48px;"> --}}
+                    <a href="javascript:void(0);" data-toggle="modal" data-target="#exampleModalCenter" class="text-white font-size-20" style="border: 1px solid #fff; border-radius: 50px; padding: 8px 48px;">
+                        Touch Here to Scan QR
+                    </a>
+                </div>
+            </div>
+            <div class="col-4 p-30" style="background: rgba(37, 42, 46, .75); height: 100vh">
+                <p class="page-title border-0 pr-0 mr-0 mt-0 text-center font-size-60 mb-4" id="time" style="line-height: 60px;"></p>
+                <div class="row pt-4">
+                    <div class="col-6 pt-4 mb-4">
+                        <p class="font-size-16 text-left">
+                            Next Meeting
+                        </p>
+                    </div>
+                    <div class="col-6 pt-4 mb-4">
+                        <p class="font-size-16 text-right">
+                            <?php echo date('D, M d, Y'); ?>
+                        </p>
+                    </div>
+                </div>
+                <div class="">
+                    @if ($nextMeets != null)
+                        @foreach ( $nextMeets as $nextMeet )
+                            <div class="row">
+                                <div class="col-7 pr-0">
+                                    <p class="font-size-16 text-left">
+                                        {{ $nextMeet->desc }}
+                                    </p>
+                                </div>
+                                <div class="col-5">
+                                    <p class="font-size-16 text-right text-nowrap">
+                                        {{ date('H:i', strtotime($nextMeet->h_start)) }}
+                                        -
+                                        {{ date('H:i', strtotime($nextMeet->h_end)) }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <p>There is no meeting schedule for today</p>
+                    @endif
+                </div>
+                <div class="text-right position-absolute" style="bottom: 15px; right: 21px">
+                    <div class="btn-group dropup">
+                        <a href="#" class="text-white font-size-20" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="ti-settings"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            @if (Auth::user()->user_type == 99)
+                                <a class="dropdown-item font-size-1rem" href="javascript:void(0);" onclick="window.location.href='{{route('dashboard')}}'"><i class="ti-arrow-left"></i>Exit</a>
+                                <div class="dropdown-divider"></div>
+                            @endif
+                            <a class="dropdown-item font-size-1rem" href="javascript:void(0);" onclick="toggleFullScreen()"><i class="ti-fullscreen"></i>Full</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item font-size-1rem" href="{{ route('logout') }}"><i class="ti-power-off"></i>Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- MODDAL SCANNER START --}}
+        <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <canvas style="width: 100%; height: 100%; margin-bottom: -5px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-dark">
+                        <p class="font-size-24" id="participant_title">welcome,</p>
+                        <h4 class="font-size-30" id="participant_name">em</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+    <script src="{{ asset('vendor/webcodecamjs/js/qrcodelib.js') }}"></script>
+    <script src="{{ asset('vendor/webcodecamjs/js/webcodecamjs.js') }}"></script>
+    <script src="{{ asset('vendor/webcodecamjs/js/main.js') }}"></script>
+    <script>
+        // function _getData(){
+        //     return $.ajax({
+        //         type: 'GET',
+        //         url: "<?= url('eventlist-api') ?>",
+        //         async: !1,
+        //         data: {
+        //             room_id: $('input[name="room_id"]').val()
+        //         }
+        //     });
+        // }
+    </script>
+    <script>
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+    <script>
+        var a = $("input[name=is_ds_mirror]").val();
+        if (a == 1) {
+            console.log('hello')
+            if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+                console.log("Let's get this party started")
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            var txt = "innerText" in HTMLElement.prototype ? "innerText" : "textContent";
+            var arg = {
+                DecodeQRCodeRate: 5,                    // null to disable OR int > 0 !
+                DecodeBarCodeRate: 5,                   // null to disable OR int > 0 !
+                // successTimeout: 3000,                    // delay time when decoding is succeed
+                codeRepetition: false,                   // accept code repetition true or false
+                tryVertical: true,                      // try decoding vertically positioned barcode true or false
+                frameRate: 15,                          // 1 - 25
+                constraints: {                          // default constraints
+                    video: {
+                        mandatory: {
+                            maxWidth: 1920,
+                            maxHeight: 1080
+                        },
+                        optional: [{
+                            sourceId: true
+                        }]
+                    },
+                    audio: false
+                },
+                flipVertical: false,                    // boolean
+                flipHorizontal: false,                  // boolean
+                zoom: -1,                               // if zoom = -1, auto zoom for optimal resolution else int
+                beep: '{{ asset('vendor/webcodecamjs/audio/beep.mp3') }}',                 // string, audio file location
+                decoderWorker: '{{ asset('vendor/webcodecamjs/js/DecoderWorker.js') }}',   // string, DecoderWorker file location
+                brightness: 0,                          // int
+                autoBrightnessValue: 100,             // functional when value autoBrightnessValue is int
+                grayScale: false,                       // boolean
+                contrast: 0,                            // int
+                threshold: 0,                           // int
+                sharpness: [],      // to On declare matrix, example for sharpness ->  [0, -1, 0, -1, 5, -1, 0, -1, 0]                   // delay time when decoding is succeed
+                resultFunction: function(res) {
+                    // decoder.stop();
+                    $.ajax({
+                        url:"{{route('checkParty')}}",
+                        type: 'get',
+                        dataType: "json",
+                        data: {
+                            barcode: res.code,
+                            room_id: $('input[name="room_id"]').val()
+                        },
+                        success: function(datas) {
+                            console.log(datas);
+                            $('#exampleModalCenter').modal('hide');
+                            $('#participant_title').html(datas.msg.title);
+                            $('#participant_name').html(datas.msg.body);
+                            $('#welcomeModal').modal('show');
+                            setTimeout(function(){
+                                $("#welcomeModal").modal('hide');
+                            }, 3000);
+                        }
+                    });
+                    $('#exampleModalCenter').modal('hide');
+                }
+            };
+            new WebCodeCamJS("canvas").init(arg).play();
+        } else if (a == 2) {
+            console.log('hello')
+            if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+                console.log("Let's get this party started")
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            var txt = "innerText" in HTMLElement.prototype ? "innerText" : "textContent";
+            var arg = {
+                DecodeQRCodeRate: 5,                    // null to disable OR int > 0 !
+                DecodeBarCodeRate: 5,                   // null to disable OR int > 0 !
+                // successTimeout: 3000,                    // delay time when decoding is succeed
+                codeRepetition: false,                   // accept code repetition true or false
+                tryVertical: true,                      // try decoding vertically positioned barcode true or false
+                frameRate: 15,                          // 1 - 25
+                constraints: {                          // default constraints
+                    video: {
+                        mandatory: {
+                            maxWidth: 1920,
+                            maxHeight: 1080
+                        },
+                        optional: [{
+                            sourceId: true
+                        }]
+                    },
+                    audio: false
+                },
+                flipVertical: false,                    // boolean
+                flipHorizontal: true,                  // boolean
+                zoom: -1,                               // if zoom = -1, auto zoom for optimal resolution else int
+                beep: '{{ asset('vendor/webcodecamjs/audio/beep.mp3') }}',                 // string, audio file location
+                decoderWorker: '{{ asset('vendor/webcodecamjs/js/DecoderWorker.js') }}',   // string, DecoderWorker file location
+                brightness: 0,                          // int
+                autoBrightnessValue: 100,             // functional when value autoBrightnessValue is int
+                grayScale: false,                       // boolean
+                contrast: 0,                            // int
+                threshold: 0,                           // int
+                sharpness: [],      // to On declare matrix, example for sharpness ->  [0, -1, 0, -1, 5, -1, 0, -1, 0]                   // delay time when decoding is succeed
+                resultFunction: function(res) {
+                    // decoder.stop();
+                    $.ajax({
+                        url:"{{route('checkParty')}}",
+                        type: 'get',
+                        dataType: "json",
+                        data: {
+                            barcode: res.code,
+                            room_id: $('input[name="room_id"]').val()
+                        },
+                        success: function(datas) {
+                            console.log(datas);
+                            $('#exampleModalCenter').modal('hide');
+                            $('#participant_title').html(datas.msg.title);
+                            $('#participant_name').html(datas.msg.body);
+                            $('#welcomeModal').modal('show');
+                            setTimeout(function(){
+                                $("#welcomeModal").modal('hide');
+                            }, 3000);
+                        }
+                    });
+                    $('#exampleModalCenter').modal('hide');
+                }
+            };
+            new WebCodeCamJS("canvas").init(arg).play();
+        }
+    </script>
+    <script>
+        // Show time
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            // s = checkTime(s);
+            document.getElementById('time').innerHTML =
+            h + ":" + m + ":" + s;
+            // h + ":" + m;
+            var t = setTimeout(startTime, 1000);
+        }
+
+        function checkTime(i) {
+            if (i < 10) {i = "0" + i};
+            return i;
+        }
+
+        setTimeout(function(){
+            $('#collapseExample').removeClass("show");
+            $('#iconToogle').toggleClass("ti-angle-up ti-angle-down");
+        }, 5000);
+
+        // setTimeout(function(){
+        //     $('#collapseExample').addClass("show");
+        //     $('#iconToogle').toggleClass("ti-angle-up ti-angle-down");
+        // }, 3000);
+
+        $('#toogleDetails').on('click', function() {
+            $('#iconToogle').toggleClass("ti-angle-up ti-angle-down");
+        })
+    </script>
+
+    {{-- btn show hide content --}}
+    {{-- <script>
+        $('#btnParticipants').on('click', function{
+            $('#contentWrapper').removeClass('d-none')
+        });
+    </script> --}}
+@endsection
+

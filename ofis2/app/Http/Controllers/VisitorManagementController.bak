@@ -1,0 +1,237 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Validator;
+use DB;
+use App\Models\Visitor;
+use Session;
+use Carbon\Carbon;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Mail;
+
+class VisitorManagementController extends Controller
+{
+    public function index(){
+        // dd($today);
+        $visitors = DB::select("SELECT
+                visitors.*,
+                users.name AS pic_name
+            FROM
+                visitors
+            INNER JOIN
+                users
+            ON visitors.pic_id = users.id
+            WHERE DATE(visitors.created_at) = DATE(NOW())
+        ");
+
+        $visitorAlls = DB::select("SELECT
+                visitors.*,
+                users.name AS pic_name
+            FROM
+                visitors
+            INNER JOIN
+                users
+            ON visitors.pic_id = users.id
+            WHERE DATE(visitors.created_at) <= DATE(NOW())
+        ");
+
+        return view('Visitor.index', compact('visitors', 'visitorAlls'));
+    }
+
+    public function view(){
+        $pics = DB::select("SELECT * FROM users WHERE users.user_type != 2 AND users.user_type != 20 AND user_type != 30 ORDER BY users.name ASC");
+        return view('Visitor._view',compact('pics'));
+    }
+
+    public function store(Request $request){
+
+        $rules = [
+            'name'                  => 'required|min:3|max:50',
+            'necessity'             => 'required',
+            'phone'                 => 'required',
+            'pic_id'                => 'required',
+            // 'img'                   => 'required',
+        ];
+
+        $messages = [
+            'necessity.required'    => 'Necessity is required',
+            'phone.required'        => 'Phone is required',
+            'pic_id.required'       => 'PIC Name is required',
+            'name.required'         => 'Name is required',
+            'name.min'              => 'Name of at least 3 characters',
+            'name.max'              => 'Name up to 50 characters',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput($request->all);
+        }
+
+        DB::beginTransaction();
+            $visitor = new Visitor;
+            $visitor->name = ($request->name);
+            $visitor->necessity = ($request->necessity);
+            $visitor->company = ($request->company);
+            $visitor->pic_id = ($request->pic_id);
+            $visitor->phone = ($request->phone);
+            $visitor->img = ($request->img);
+            // $visitor->pic_id = ($request->pic_id);
+            // $visitor->img = 'data:image/png;base64,'.base64_encode(file_get_contents($request->file('img')));
+            $save = $visitor->save();
+        DB::commit();
+
+        if($save){
+            $unixId = 'GUEST'.round(microtime(true) * 1000);
+            // $beginTime=date('Y-m-d').'T'.date('h:i:s');
+            // $endTime=date("Y-m-d\TH:i:s", strtotime("+15 minutes"));
+            $beginTime="2020-01-01T00:00:00";
+            $endTime="2037-12-31T23:59:59";
+
+            $ipCamera = array(
+                '10.1.24.4:80',
+                '10.1.24.3:80',
+                '10.1.24.8:80',
+                '10.1.24.9:80'
+            );
+
+
+
+            $postFieldUserInfo = array (
+                'UserInfo' => array (
+                    'employeeNo' => $unixId,
+                    'name' => $request->name,
+                    'userType' => 'normal',
+                    'gender' => '',
+                    'doorRight' => '1',
+                    'maxOpenDoorTime' => 0,
+                    'RightPlan' => array ( array (
+                            'doorNo' => 1,
+                            'planTemplateNo' => '1',
+                        ),
+                    ),
+                    'Valid' => array (
+                        'enable' => true,
+                        'beginTime' => $beginTime,
+                        'endTime' => $endTime,
+                        'timeType' => 'local',
+                    ),
+                ),
+            );
+
+            $postFieldUserInfo = \json_encode($postFieldUserInfo);
+
+            $image = $request->input('img'); // image base64 encoded
+            preg_match("/data:image\/(.*?);/",$image,$image_extension); // extract the image extension
+            $image = preg_replace('/data:image\/(.*?);base64,/','',$image); // remove the type part
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'image_' . time() . '.' . $image_extension[1]; //generating unique file name;
+
+
+            Storage::disk('public')->put($imageName,base64_decode($image));
+            $imgPath = Storage::disk('public')->path($imageName);
+
+            $postFieldImages= array(
+                'name' => '{"faceLibType":"blackFD","FDID":"1","FPID":"'.$unixId.'","name":"'.$request->name.'","gender":"male"}',
+                'img'=> curl_file_create($imgPath, 'image/jpeg', 'halo.jpeg')
+            );
+
+            foreach($ipCamera as $ip) {
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'http://'.$ip.'/ISAPI/AccessControl/UserInfo/Record?format=json',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS =>$postFieldUserInfo,
+                    CURLOPT_USERPWD => 'admin' . ":" . 'mrt12345',
+                    CURLOPT_HTTPAUTH => CURLAUTH_DIGEST,
+                    CURLOPT_HTTPHEADER => array(
+                        'Connection: keep-alive',
+                        'Accept: /',
+                        'X-Requested-With: XMLHttpRequest',
+                        'If-Modified-Since: 0',
+                        'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+                        'Accept-Language: en-US,en;q=0.9,vi;q=0.8,en-GB;q=0.7'
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                print_r($response);
+                print_r('</br>');
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'http://'.$ip.'/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $postFieldImages,
+                    CURLOPT_USERPWD => 'admin' . ":" . 'mrt12345',
+                    CURLOPT_HTTPAUTH => CURLAUTH_DIGEST,
+                    CURLOPT_HTTPHEADER => array(
+                        'Connection: keep-alive',
+                        'Accept: /',
+                        'X-Requested-With: XMLHttpRequest',
+                        'If-Modified-Since: 0',
+                        'Content-Type: multipart/form-data;',
+                        'Accept-Language: en-US,en;q=0.9,vi;q=0.8,en-GB;q=0.7'
+                    ),
+                ));
+                $response = curl_exec($curl);
+                print_r($response);
+                print_r('</br>');
+                curl_close($curl);
+            }
+
+            Storage::disk('public')->delete($imageName);
+
+            Session::flash('success', 'Successfully registred new Visitor.');
+            return redirect()->route('visitorView');
+        } else {
+            Session::flash('errors', ['' => 'Failed to add new visitor, Please try again later']);
+            return redirect()->route('visitorView');
+        }
+    }
+
+    public function CheckVisitor(Request $request){
+        $data = $request->email;
+        $now = date('Y-m-d 00:00:00');
+        $nowTime = date('Y-m-d H:i:00');
+        // dd($now);
+        // dd($nowTime);
+        $datas = DB::select("SELECT
+                t_booking_participants.id,
+                t_booking_participants.book_id,
+                t_booking_participants.name,
+                t_booking_participants.email,
+                t_booking_participants.phone,
+                t_booking_participants.company,
+                t_booking_rooms.user_id AS pic_id,
+                users.name AS pic_name
+            FROM
+                t_booking_participants
+                    INNER JOIN
+                t_booking_rooms ON t_booking_participants.book_id = t_booking_rooms.id
+                    INNER JOIN
+                users ON t_booking_rooms.user_id = users.id
+            WHERE
+                t_booking_rooms.meeting_date = '".$now."'
+                    AND t_booking_rooms.h_end > '".$nowTime."'
+                    AND t_booking_participants.email = '".$data."'
+        ");
+        // dd($datas);
+        return response()->json($datas);
+    }
+
+}

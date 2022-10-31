@@ -1,0 +1,412 @@
+.detail-meeting-room {
+    padding: 1.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+}
+.font-size-11 {
+    font-size: 11px;
+}
+tr.group {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+tr.group > td {
+    text-transform: uppercase !important;
+    font-size: 11px;
+    font-weight: bold;
+}
+.text-initial {
+    text-transform: initial !important;
+}
+.font-size-1rem {
+    font-size: 1rem !important;
+}
+body.dark {
+    /* background-color: #2a2c3a; */
+    background-color: #272B34;
+    /* color: #b5b7bf !important */
+    color: #ffffff !important
+}
+
+/* CALENDAR */
+/* #calendar {
+  max-width: 1100px;
+  margin: 40px auto;
+} */
+
+.fc-license-message {
+    display: none !important;
+}
+
+
+/* DEVICE CONTROL */
+
+.navbar-static-bottom {
+    position: fixed;
+    background-color: transparent !important;
+    width: calc(100% - 60px);
+    bottom: 0;
+    margin-left: -15px !important;
+}
+
+.dropdown .no-carret > .dropdown-toggle::after{
+
+}
+
+.dropdown-show-top{
+    top: auto !important;
+    bottom: 100% !important;
+}
+
+.mb-0-5 {
+    margin-bottom: 0.5rem;
+}
+
+.device-control-icon {
+    height: 80px;
+    width: 80px;
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+    font-size: 32px;
+    line-height: 80px;
+    background: rgba(0, 0, 0, .25);
+    border-radius: .675rem;
+    color: #f0f0f0;
+    border: 1px solid #dee2e6;
+}
+
+.icon-action-right {
+    position: absolute;
+    right: 0;
+    font-size: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}
+
+.devices-control-dark {
+    /* background-color: #272b34 !important; */
+    background-color: transparent !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    border: 0px solid #dee2e6 !important;
+}
+.devices-control-dark > .box-header {
+    color: #fff !important;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: 0px solid #dee2e6;
+}
+
+.devices-control-dark > .box-body {
+    color: #fff !important;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: 0px solid #dee2e6;
+}
+
+/* END OF DEVICE CONTROL */
+
+.btn-action {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    cursor: pointer;
+}
+.btn-action:hover {
+    color: #3e8ef7;
+}
+
+.border-radius-0 {
+    border-radius: 0 !important;
+}
+.fc-left > h2 {
+    text-transform: capitalize !important;
+}
+
+.main-sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.main-sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+@media only screen and (min-width: 960px) {
+    .xtd{
+        margin-left: 6rem;
+    }
+}
+
+@media only screen and (max-width: 765px) {
+    .logo-mini{
+        display: none !important;
+    }
+}
+
+.toggle-control {
+    display: block;
+    position: relative;
+    padding-left: 84px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+}
+.toggle-control input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.toggle-control input:checked ~ .control {
+    background-color: dodgerblue;
+}
+.toggle-control input:checked ~ .control:after {
+    left: 55px;
+}
+.toggle-control .control {
+    position: absolute;
+    top: -32px;
+    left: 0;
+    height: 32px;
+    width: 84px;
+    border-radius: 25px;
+    background-color: darkgray;
+    transition: background-color 0.15s ease-in;
+}
+.toggle-control .control:after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 4px;
+    width:24px;
+    height:24px;
+    border-radius: 25px;
+    background: white;
+    transition: left 0.15s ease-in;
+}
+
+body > div > nav > a > div.logo-mini {
+    display: none;
+    transition: 2s;
+}
+
+body.sidebar-collapse > div > nav > a > div.logo-mini {
+    display: block;
+}
+
+.logo-mini {
+    transition-timing-function: ease-in;
+    transition-timing-function: ease-out;
+}
+
+body > div > nav > a > div.logo-lg {
+    display: block;
+    transition: 2s;
+}
+
+body.sidebar-collapse > div > nav > a > div.logo-lg {
+    display: none;
+    transition: 2s;
+}
+
+.logo-lg {
+    transition-timing-function: ease-in;
+    transition-timing-function: ease-out;
+}
+
+.qr-modal-body {
+    background: #94cac1;
+    padding: 5.25px 5.25px 0;
+}
+
+
+#my_camera {
+    margin: auto;
+    width: 50%;
+}
+
+#my_camera > video {
+    width: 1280px !important;
+    height: 720px !important;
+    margin: 0 auto !important;
+}
+
+#my_camera_qr {
+    margin: auto;
+    width: 50%;
+}
+
+#my_camera_qr > video {
+    width: 1280px !important;
+    height: 720px !important;
+    margin: 0 auto !important;
+}
+
+/* VMS */
+.vms-body {
+    background: url('../img/vms.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.welcome-wrapper {
+    background: rgba(255, 255, 255, .6);
+    border-radius: 8px;
+    border: 1px solid #fff;
+    color: #333;
+}
+.btn-visitor {
+    padding: 16px;
+    font-weight: 300;
+    background: rgba(255,255,255,.8);
+    border: 1px solid #fff;
+    color: #333;
+}
+.btn-visitor:hover {
+    color: #333;
+}
+.btn-visitor:focus {
+    color: #333;
+}
+.vms-footer {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    padding: 1rem;
+    width: 100%;
+}
+.vms-text-subtitle {
+    text-transform: capitalize;
+    display: block;
+    margin-bottom: .5rem;
+}
+
+.btn-tabs-custom {
+    background-color: #ffffff !important;
+    color: #3e8ef7 !important;
+    border: 1px solid #3e8ef7 !important;
+    text-transform: capitalize !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    padding: 0.375rem 0.75rem !important;
+}
+.btn-tabs-custom.active {
+    background-color: #3e8ef7 !important;
+    color: #ffffff !important;
+    border: 1px solid #3e8ef7 !important;
+    text-transform: capitalize !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    padding: 0.375rem 0.75rem !important;
+}
+
+/* LOCKER */
+.locker-grid {
+    height: 5rem;
+    padding: 8px;
+}
+
+.select2-results {
+    color: #212529;
+}
+
+/* HIGHCHART */
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 320px;
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #EBEBEB;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+.dt-buttons {
+    position: absolute !important;
+    top: 8.4rem !important;
+    right: 1.3rem !important;
+}
+
+.dt-buttons>.dt-button {
+    border-radius: .25rem !important;
+    border: 1px solid #3e8ef7 !important;
+}
+
+.dt-buttons>.dt-button:hover {
+    background-color: #3e8ef7 !important;
+    border: 1px solid #3e8ef7 !important;
+}
+
+@media screen and (max-width: 600px)  {
+    .dt-buttons {
+        position: inherit;
+        top: inherit;
+        right: inherit;
+    }
+}
+
+input[type="number"] {
+    min-width: 50px;
+}
+
+.datepicker td, .datepicker th {
+    text-align: center;
+    width: 24px;
+    height: 24px;
+    padding: 8px !important;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: none;
+}
+
+.datepicker table tr td.today, .datepicker table tr td.today.disabled, .datepicker table tr td.today.disabled:hover, .datepicker table tr td.today:hover {
+    color: #fff !important;
+    background-image: none !important;
+    background-color: #286090 !important;
+    border-color: #204d74 !important;
+}
+
+.w--25 {
+    width: 25% !important;
+}
+.w--50 {
+    width: 50% !important;
+}
+.w--75 {
+    width: 75% !important;
+}
+.w--100 {
+    width: 100% !important;
+}
+.ml--3 {
+    margin-left: 1rem !important;
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="UnattendedHostPersistenceState">
+    <option name="openedFilesInfos">
+      <list>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="482" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/app/Models/Visitor.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="3479" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/ProjectApproved/index.blade.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/HighRisk/_add.blade.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="22216" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/Layouts/_sidebar.blade.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="10688" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/Purchasing/_add.blade.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="17113" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/Project/index.blade.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="468" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/app/Http/Controllers/AreaController.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="4594" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/routes/web.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="289" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/Supplier/index.blade.php" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="24698" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/ofis2/resources/views/ProjectApproved/index-visitor_form.blade.php" />
+        </OpenedFileInfo>
+      </list>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,99 @@
+@extends('master')
+
+@section('breadcrumb')
+    <div class="mr-auto w-p50">
+        <h3 class="page-title">Large Meeting Room</h3>
+        <div class="d-inline-block align-items-center">
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="mdi mdi-home-outline"></i></li>
+                    <li class="breadcrumb-item active" aria-current="page">Meeting Room</li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <a href="{{ url('/meeting-room') }}">List Meeting Room</a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+@endsection
+
+@section('content')
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header">
+                    <h4 class="box-title">Basic Info</h4>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label>Meeting Room Name</label>
+                        <input type="text" class="form-control" value="Large Meeting Room" placeholder="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacity</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="text" class="form-control" value="12" placeholder="Min" disabled>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control" value="24" placeholder="Max" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Facilities</label>
+                        <textarea rows="5" cols="5" class="form-control" disabled>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores quis itaque illo quia ex quaerat facilis! Corrupti.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <input type="text" class="form-control" value="Active" placeholder="" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="box">
+				<div class="box-header">
+					<h4 class="box-title">Meeting Room Image</h4>
+				</div>
+				<div class="box-body">
+					<div class="row">
+                        <div class="col-sm-6 col-6 mb-4">
+                            <img src="{{url('img/meeting-room/meeting_room_1.jpeg')}}" alt="">
+                        </div>
+                        <div class="col-sm-6 col-6 mb-4">
+                            <img src="{{url('img/meeting-room/meeting_room_2.jpeg')}}" alt="">
+                        </div>
+                        <div class="col-sm-6 col-6">
+                            <img src="{{url('img/meeting-room/meeting_room_3.jpeg')}}" alt="">
+                        </div>
+                    </div>
+				</div>
+			</div>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-1">
+                    <div class="form-group">
+                        <button type="submit" onclick="window.history.go(-1)" class="btn btn-danger btn-block">Back</button>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <div class="form-group">
+                        <a href="{{ url('/meeting-room/details/edit') }}" class="btn btn-info btn-block">Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+    <script src="{{ asset('vendor/dropzone/dropzone.js') }}"></script>
+@endsection
+
+
+<div class="form-group"><label>Image</label><input name="img" type="file" class="form-control" value="" placeholder=""></div><div class="form-group"><Label>Voice Command</Label><select name="audio" id="audioCommand" class="select2" style="width: 100%"><option value="1">Pagi</option><option value="2">Siang</option><option value="3">Malam</option></select></div><div class="form-group" id="audioFile1"><label>Audio pagi</label><input name="pagi" type="file" class="form-control" cols="30" rows="10" maxlength="20"></div><div class="form-group" id="audioFile2"><label>Audio siang</label><input name="siang" type="file" class="form-control" cols="30" rows="10" maxlength="20"></div><div class="form-group" id="audioFile3"><label>Audio malam</label><input name="malam" type="file" class="form-control" cols="30" rows="10" maxlength="20"></div>
+
+
+

@@ -1,0 +1,61 @@
+@import "../../../../twbs/bootstrap/less/variables.less";
+@import "../../../../twbs/bootstrap/less/mixins.less";
+
+
+.qform-horizontal {
+  .row {
+    .form-group {
+      vertical-align: middle;
+      padding-left:0;
+      padding-right:0;
+    }
+    .form-control {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .control-label {
+      text-align: right;
+      margin-bottom: 0;
+      padding-top: (@padding-base-vertical + 1); // Default padding plus a border
+    }
+
+    .checkbox {
+      margin-top: 7px;
+    }
+
+    .row {
+      .form-group .btn-group {
+        display:inline-block;
+      }
+    }
+
+  }
+}
+
+.row {
+  .form-group .btn-group {
+    display:block;
+    // This appears to be a bootstrap bug. By floating the labels, bootstrap gives them no height, causing problems
+    // for the following item. The below should fix that.
+    .btn {
+      float:none;
+      display:inline-block;
+      margin-right:0;
+
+    }
+    .btn+.btn {
+      margin-left: -5px;
+    }
+  }
+}
+
+// fixes a corner problem when putting a background color on a modal header
+.modal-header {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+
+
+
